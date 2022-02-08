@@ -2,10 +2,10 @@
 
 version       = "0.1.0"
 author        = "Akito <the@akito.ooo>"
-description   = "A new awesome nimble nimpackage."
+description   = "A new awesome nimble procwatch."
 license       = "GPL-3.0-or-later"
 srcDir        = "src"
-bin           = @["nimpackage"]
+bin           = @["procwatch"]
 skipDirs      = @["tasks"]
 skipFiles     = @["README.md"]
 skipExt       = @["nim"]
@@ -33,15 +33,15 @@ task fbuild, "Build project.":
   exec """nim c \
             --define:danger \
             --opt:speed \
-            --out:nimpackage \
-            src/nimpackage
+            --out:procwatch \
+            src/procwatch
        """
 task dbuild, "Debug Build project.":
   exec """nim c \
             --define:debug:true \
             --debuginfo:on \
-            --out:nimpackage \
-            src/nimpackage
+            --out:procwatch \
+            src/procwatch
        """
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim tasks/cfg_optimized.nims"

@@ -1,4 +1,4 @@
-[![nimble](https://raw.githubusercontent.com/yglukhov/nimble-tag/master/nimble.png)](https://nimble.directory/pkg/nimpackage)
+[![nimble](https://raw.githubusercontent.com/yglukhov/nimble-tag/master/nimble.png)](https://nimble.directory/pkg/procwatch)
 
 [![Language](https://img.shields.io/badge/language-Nim-orange.svg?style=plastic)](https://nim-lang.org/)
 
@@ -6,28 +6,47 @@
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/Akito?style=plastic)](https://liberapay.com/Akito/)
 
 ## What
-This is a base template for App projects written in Nim.
+Uses the `/proc` pseudo-filesystem, to notify of completed Linux processes.
 
 ## Why
-Allows kickstarting new projects, without fiddling around with metadata basics.
+Compiling Gentoo or compiling Linux on a Raspberry Pi 0 W can take days.
+If you do not want to check, when the compilation has finally finished, but instead be automatically notified on completion, this is the app for you.
 
 ## How
-Select this is a template, when creating a new Git repository through a Git WebUI
+Send an e-mail, when process with the PID `314` exits.
+
+```bash
+procwatch --pid 314 --to mail@boom.me
+```
+
+Watch all processes of the name `appy`. Dispatch a desktop notification, instead of an e-mail.
+
+```bash
+procwatch --command appy --notify
+```
+
+For more advanced possibilities, check the `help` on the command line.
+
+```bash
+procwatch --help
+```
 
 ## Where
-Git.
+For now, you can download pre-compiled binaries in the Releases section of this repository.
+It is planned to package this properly, once it has reached a rather stable state.
 
 ## Goals
-* Performance
+* Reliability
+* Get process watching done. Do not overload with unnecessary features.
 
 ## Project Status
-Stable
+Before Pre-Alpha
 
 ## TODO
-* Always improve
+* Reach Stability.
 
 ## License
-Copyright (C) 2020  Akito <the@akito.ooo>
+Copyright © 2022  Akito <the@akito.ooo>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
