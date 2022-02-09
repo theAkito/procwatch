@@ -1,6 +1,6 @@
 [![nimble](https://raw.githubusercontent.com/yglukhov/nimble-tag/master/nimble.png)](https://nimble.directory/pkg/procwatch)
 
-[![Source](https://img.shields.io/badge/project-source-2a2f33?style=plastic)](https://gitlab.com/manimaran/website-monitor)
+[![Source](https://img.shields.io/badge/project-source-2a2f33?style=plastic)](https://github.com/theAkito/procwatch)
 [![Language](https://img.shields.io/badge/language-Nim-orange.svg?style=plastic)](https://nim-lang.org/)
 
 
@@ -18,13 +18,13 @@ If you do not want to check, when the compilation has finally finished, but inst
 Send an e-mail, when process with the PID `314` exits.
 
 ```bash
-procwatch --pid 314 --to mail@boom.me
+procwatch --pid=314 --to=mail@boom.me
 ```
 
 Watch all processes of the name `appy`. Dispatch a desktop notification, instead of an e-mail.
 
 ```bash
-procwatch --command appy --notify
+procwatch --notify appy
 ```
 
 For more advanced possibilities, check the `help` on the command line.
