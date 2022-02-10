@@ -15,6 +15,13 @@ Compiling Gentoo or compiling Linux on a Raspberry Pi 0 W can take days.
 If you do not want to check, when the compilation has finally finished, but instead be automatically notified on completion, this is the app for you.
 
 ## How
+If you want to build the project yourself, you need `libssl` and `libdbus` development libraries.
+
+Example installation for Debian based distributions:
+```bash
+apt install -y libdbus-1-dev libssl-dev
+```
+
 Send an e-mail, when process with the PID `314` exits.
 
 ```bash
@@ -37,15 +44,18 @@ procwatch --help
 For now, you can download pre-compiled binaries in the Releases section of this repository.
 It is planned to package this properly, once it has reached a rather stable state.
 
+Runs on Linux, what else?
+
 ## Goals
 * Reliability
 * Get process watching done. Do not overload with unnecessary features.
 
 ## Project Status
-Before Pre-Alpha
+Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
 
 ## TODO
 * Reach Stability.
+* Add multiple E-Mail recipients support.
 
 ## License
 Copyright © 2022  Akito <the@akito.ooo>
