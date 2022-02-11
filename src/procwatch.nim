@@ -11,6 +11,8 @@ import
   configurator
 
 proc getDefaultTime(): DateTime
+proc isProkRunningLive(): bool
+proc areProksRunningsLive(): bool
 
 type
   ProcessNotFoundError = object of OSError
@@ -71,6 +73,10 @@ proc readPathCmd(pid: int): string =
   try: constructPathPid(pid).joinPath("cmdline").readFile except: ""
 proc readCmdName(pid: int): string =
   try: constructPathPid(pid).joinPath("comm").readFile except: ""
+proc waitForProkSingle() =
+  while isProkRunningLive(): waitPoll()
+proc waitForProksMulti() =
+  while areProksRunningsLive(): waitPoll()
 
 proc showHelp() =
   echo "Help Text!"
@@ -182,27 +188,28 @@ proc areProksRunningsLive(): bool =
     false
 
 proc run() =
+  #[ Initialise configuration file. ]#
   if not initConf(): raise OSError.newException("Config file could not be found and not be generated!")
+  #[ Discover running processes by PID in /proc. ]#
   pidsRunning = readRunningPids()
+  #[ Manifest command line options. ]#
   setOpts()
+  #[ Gather data regarding selected process. ]#
   setProkInfo(true)
   let proksFoundByNameAreAvailable = proksFoundByName.len != 0
+  #[ Find out, if a single process or a process group is being watched by name. ]#
   if proksFoundByNameAreAvailable:
-    echo "proks running: " & $areProksRunningsLive()
+    logger.log(lvlDebug, "Proks found by name are available.")
   elif not isProkRunning():
-    echo "Determined process is not running!"
-    echo prok.repr
+    logger.log(lvlError, "Process with pid $# and name $# is not running!" % [$prok.pid, prok.name])
     quit(2)
   if proksFoundByNameAreAvailable:
-    while areProksRunningsLive():
-      sleep 5_000
-    echo proksFoundByName.repr
-    # notifiyViaMail()
+    #[ Multiple processes are being watched by name. ]#
+    waitForProksMulti()
   else:
-    while isProkRunningLive():
-      sleep 5_000
-    # notifiyViaMail()
-  # notifyViaDbus()
-  notifyViaMattermost()
+    #[ A single process is being watched by PID. ]#
+    waitForProkSingle()
+  #[ Watching ended, which means the processes finished executing. Time to notify the configured targets. ]#
+  notify()
 
 when isMainModule: run()
