@@ -1,7 +1,10 @@
 import
   meta,
   configurator,
-  externnotifapi/mattermost,
+  externnotifapi/[
+    mattermost,
+    matrix
+  ],
   std/[
     smtp,
     with,
@@ -66,7 +69,18 @@ proc notifyViaMattermost() =
   )
   discard context.postMattermost()
 
+proc notifyViaMatrix() =
+  var context = MatrixContext(
+    url: config.matrixURL,
+    username: config.matrixUsername,
+    password: config.matrixPassword,
+    roomID: config.matrixRoomID,
+    message: config.matrixMessage
+  )
+  discard context.postMatrix()
+
 proc notify*() =
   if config.useMail: notifiyViaMail()
   if config.useDesktop: notifyViaDbus()
   if config.useMattermost: notifyViaMattermost()
+  if config.useMatrix: notifyViaMatrix()

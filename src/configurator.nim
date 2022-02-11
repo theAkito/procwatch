@@ -40,6 +40,11 @@ type
     mattermostRootID          *: string
     mattermostFileIDs         *: seq[string]
     mattermostProperties      *: JsonNode
+    matrixURL                 *: string
+    matrixUsername            *: string
+    matrixPassword            *: string
+    matrixRoomID              *: string
+    matrixMessage             *: string
     debug                     *: bool
 
 let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
@@ -55,6 +60,8 @@ var config* = ProcwatchConfig(
   dbusNameIcon: "help-faq",
   mattermostURL: "http://localhost:8065/api/v4",
   mattermostProperties: parseJson("{}"),
+  matrixURL: "https://matrix.org",
+  matrixMessage: "Process Finished",
   debug: meta.debug
 )
 
@@ -81,6 +88,7 @@ proc initConf*(path = configPath, name = configName): bool =
     config = pathFull.parseFile().to(ProcwatchConfig)
     config.mailPassword = config.mailPassword.decode()
     config.mattermostPassword = config.mattermostPassword.decode()
+    config.matrixPassword = config.matrixPassword.decode()
     return true
   try:
     genDefaultConfig(path, name)

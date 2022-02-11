@@ -56,6 +56,8 @@ Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
 ## TODO
 * ~~Add Configuration File.~~
 * ~~Add multiple E-Mail recipients support.~~
+* ~~Add Mattermost support.~~
+* ~~Add Matrix support.~~
 * Reach Stability.
 
 ## License
