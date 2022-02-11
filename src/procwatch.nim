@@ -53,18 +53,16 @@ var
   proksFoundByName: seq[Proc] = @[]
 
 func basename(path: string): string =
-  let
-    pathSplit = path.split(DirSep)
+  let pathSplit = path.split(DirSep)
   pathSplit[pathSplit.high]
 
 func basenamePid(path: string): int =
   let
     basename = basename(path)
-    pid = try:
-      basename.parseInt
-    except ValueError:
-      pidUnassigned
-  result = pid
+    pid =
+      try: basename.parseInt
+      except ValueError: pidUnassigned
+  pid
 
 proc getDefaultTime(): DateTime = initTimeStamp(0).toDateTime
 proc constructPathPid(pid: int): string = dirProc.joinPath($pid)
@@ -102,11 +100,6 @@ proc setOpts() =
 
 proc isInputValid(): bool =
   if prok.pid == pidUnassigned or prok.name == "": false else: true
-
-proc exitOnValidationFailure() =
-  if not isInputValid():
-    echo "Command could not be detected, because neither a process name nor a process PID was provided."
-    quit(64)
 
 proc findPidsByName(name: string): seq[int] =
   for pid in pidsRunning:
@@ -152,7 +145,7 @@ proc setProkInfo(fresh: bool #[Set to `true` when running this proc for the firs
   except ProcessNotFoundError:
     raise getCurrentException()
   except:
-    echo getCurrentExceptionMsg()
+    logger.log(lvlError, getCurrentExceptionMsg())
     prok.finish = now()
 
 proc readRunningPids(): seq[int] =
@@ -190,7 +183,7 @@ proc areProksRunningsLive(): bool =
 
 proc run() =
   #[ Initialise configuration file. ]#
-  if not initConf(configPath): raise OSError.newException("Config file could not be found and not be generated!")
+  if not initConf(configPath): raise OSError.newException("Config file could not neither be found nor generated!")
   #[ Discover running processes by PID in /proc. ]#
   pidsRunning = readRunningPids()
   #[ Manifest command line options. ]#
