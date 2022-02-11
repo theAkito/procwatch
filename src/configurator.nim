@@ -9,6 +9,7 @@ import
 type
   ProcwatchConfig = object
     version                   *: string
+    intervalPoll              *: int
     useMail                   *: bool
     useDesktop                *: bool
     useMattermost             *: bool
@@ -45,6 +46,7 @@ let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
 
 var config* = ProcwatchConfig(
   version: appVersion,
+  intervalPoll: 5_000,
   mailPortOutgoing: 587,
   dbusNameApp: "Process Watcher",
   dbusSummary: "Process Finished",
