@@ -50,7 +50,7 @@ const
 let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
 
 func is20x(code: string): bool = code.startsWith("20")
-func genApiMsgSendPath(roomID, token: string): string = r"/_matrix/client/r0/rooms/!$#/send/$#?access_token=$#" % [roomID, eventTypeMsg, token]
+func genApiMsgSendPath(roomID, token: string): string = r"/_matrix/client/r0/rooms/$#/send/$#?access_token=$#" % [roomID, eventTypeMsg, token]
 template raiseGeneric(msg: untyped) = raise MatrixDefect.newException(msg)
 template raiseMalformedURL() = raise MatrixDefect.newException(exceptMsgMalformedURL)
 
