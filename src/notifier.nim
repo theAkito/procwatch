@@ -20,7 +20,7 @@ let
   portOutgoing       : Port = config.mailPortOutgoing.Port
   smtpOutgoing       : string = config.mailSmtpServerOutgoing
   mailAddressSource  : string = config.mailAddressSource
-  mailAddressTarget  : string = config.mailAddressTarget
+  mailAddressTarget  : seq[string] = config.mailAddressTarget
 
 proc waitPoll*() = sleep intervalPoll
 
@@ -29,7 +29,7 @@ proc notifiyViaMail() =
     msg = createMessage(
       subject,
       message,
-      @[mailAddressTarget], #[Addressee]#
+      mailAddressTarget, #[Addressee]#
       @[], #[CC]#
       @[ #[Headers]#
         ("From", "$# <$#>" % [nameSender, mailAddressSource])
@@ -40,7 +40,7 @@ proc notifiyViaMail() =
     connect(smtpOutgoing, portOutgoing)
     startTls()
     auth(username, password)
-    sendMail(mailAddressSource, @[mailAddressTarget], $msg)
+    sendMail(mailAddressSource, mailAddressTarget, $msg)
 
 proc notifyViaDbus() =
   var notification = initNotification(

@@ -54,8 +54,9 @@ Runs on Linux, what else?
 Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
 
 ## TODO
+* ~~Add Configuration File.~~
+* ~~Add multiple E-Mail recipients support.~~
 * Reach Stability.
-* Add multiple E-Mail recipients support.
 
 ## License
 Copyright © 2022  Akito <the@akito.ooo>

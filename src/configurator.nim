@@ -25,7 +25,7 @@ type
     mailPortOutgoing          *: int
     mailSmtpServerOutgoing    *: string
     mailAddressSource         *: string
-    mailAddressTarget         *: string
+    mailAddressTarget         *: seq[string]
     dbusNameApp               *: string
     dbusSummary               *: string
     dbusMessage               *: string
