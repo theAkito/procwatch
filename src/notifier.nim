@@ -8,19 +8,23 @@ import
     strutils
   ],
   notification
+from os import sleep
 
 let
-  nameSender: string = config.mailNameSender
-  username: string = config.mailUsername
-  password: string = config.mailPassword
-  subject: string = config.mailSubject
-  message: string = config.mailMessage
-  portOutgoing: Port = config.mailPortOutgoing.Port
-  smtpOutgoing: string = config.mailSmtpServerOutgoing
-  mailAddressSource: string = config.mailAddressSource
-  mailAddressTarget: string = config.mailAddressTarget
+  intervalPoll                = config.intervalPoll
+  nameSender         : string = config.mailNameSender
+  username           : string = config.mailUsername
+  password           : string = config.mailPassword
+  subject            : string = config.mailSubject
+  message            : string = config.mailMessage
+  portOutgoing       : Port = config.mailPortOutgoing.Port
+  smtpOutgoing       : string = config.mailSmtpServerOutgoing
+  mailAddressSource  : string = config.mailAddressSource
+  mailAddressTarget  : string = config.mailAddressTarget
 
-proc notifiyViaMail*() =
+proc waitPoll*() = sleep intervalPoll
+
+proc notifiyViaMail() =
   let
     msg = createMessage(
       subject,
@@ -38,7 +42,7 @@ proc notifiyViaMail*() =
     auth(username, password)
     sendMail(mailAddressSource, @[mailAddressTarget], $msg)
 
-proc notifyViaDbus*() =
+proc notifyViaDbus() =
   var notification = initNotification(
     summary = config.dbusSummary,
     body = config.dbusMessage,
@@ -48,7 +52,7 @@ proc notifyViaDbus*() =
   notification.add Hint(kind: hkUrgency, urgency: Normal)
   discard notification.notify()
 
-proc notifyViaMattermost*() =
+proc notifyViaMattermost() =
   var context = MattermostContext(
     url: config.mattermostURL,
     loginID: config.mattermostLoginID,
@@ -61,3 +65,8 @@ proc notifyViaMattermost*() =
     properties: config.mattermostProperties
   )
   discard context.postMattermost()
+
+proc notify*() =
+  if config.useMail: notifiyViaMail()
+  if config.useDesktop: notifyViaDbus()
+  if config.useMattermost: notifyViaMattermost()
