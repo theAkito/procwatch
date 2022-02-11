@@ -47,6 +47,7 @@ let
   )
 
 var
+  configPath: string
   pidsRunning: seq[int] = @[]
   pidsFoundByName: seq[int] = @[]
   proksFoundByName: seq[Proc] = @[]
@@ -94,7 +95,7 @@ proc setOpts() =
           of "p", "pid":
             prok.pid = val.parseInt
           of "c", "config":
-            discard #TODO
+            configPath = val
           of "h", "help":
             showHelp()
       of cmdEnd: assert(false)
@@ -189,7 +190,7 @@ proc areProksRunningsLive(): bool =
 
 proc run() =
   #[ Initialise configuration file. ]#
-  if not initConf(): raise OSError.newException("Config file could not be found and not be generated!")
+  if not initConf(configPath): raise OSError.newException("Config file could not be found and not be generated!")
   #[ Discover running processes by PID in /proc. ]#
   pidsRunning = readRunningPids()
   #[ Manifest command line options. ]#
