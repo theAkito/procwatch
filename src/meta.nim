@@ -10,4 +10,4 @@ const
 
 
 func defineLogLevel*(): Level =
-  if debug: lvlNotice else: lvlInfo
+  if debug: lvlDebug else: lvlInfo
