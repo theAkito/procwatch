@@ -42,6 +42,9 @@ type
 
 const
   exceptMsgMalformedURL = "Malformed URL or wrong URL queries provided!"
+  exceptMsgPasswordLoginUnsupported = "This Matrix instance does not support login by username and password!"
+  exceptMsgPasswordLoginError = "Error occured when trying to log into Matrix instance!"
+  exceptMsgSendMsgError = "Error occured when trying to send message in Matrix room!"
   apiPathLogin = "/_matrix/client/r0/login"
   flowTypeLogin = "m.login.password"
   eventTypeMsg = "m.room.message"
@@ -49,7 +52,8 @@ const
 
 let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
 
-func is20x(code: string): bool = code.startsWith("20")
+func is20x(code: int): bool = code.intToStr().startsWith("20")
+func genApiLoginURL(baseURL: string): string = baseURL & apiPathLogin
 func genApiMsgSendPath(roomID, token: string): string = r"/_matrix/client/r0/rooms/$#/send/$#?access_token=$#" % [roomID, eventTypeMsg, token]
 template raiseGeneric(msg: untyped) = raise MatrixDefect.newException(msg)
 template raiseMalformedURL() = raise MatrixDefect.newException(exceptMsgMalformedURL)
@@ -57,12 +61,13 @@ template raiseMalformedURL() = raise MatrixDefect.newException(exceptMsgMalforme
 proc apiLogin(ctx: MatrixContext): MatrixLoginRes =
   ctx.url.normalizePathEnd()
   let
+    urlApiLogin = parseUrl(genApiLoginURL(ctx.url))
     reqPrep = Request(
-      url: parseUrl(ctx.url & apiPathLogin),
+      url: urlApiLogin,
       verb: "get"
     )
     req = Request(
-      url: parseUrl(ctx.url & apiPathLogin),
+      url: urlApiLogin,
       verb: "post",
       body: $(%* MatrixLoginReq(
         `type`: flowTypeLogin,
@@ -71,19 +76,19 @@ proc apiLogin(ctx: MatrixContext): MatrixLoginRes =
       ))
     )
     respPrep = reqPrep.fetch()
-    respPrepCode = $respPrep.code
+    respPrepCode = respPrep.code
     jRespPrep =
       try: respPrep.body.parseJson()
       except: raiseMalformedURL()
-    successPrep = jRespPrep["flows"].getElems().anyIt(it.fields["type"].getStr() == flowTypeLogin)
+    successPrep = try: jRespPrep["flows"].getElems().anyIt(it.fields["type"].getStr() == flowTypeLogin) except: false
   if successPrep and respPrepCode.is20x():
     logger.log(lvlDebug, jRespPrep.pretty)
   else:
     logger.log(lvlError, jRespPrep.pretty)
-    raiseGeneric("This Matrix instance does not support login by username and password!")
+    raiseGeneric(exceptMsgPasswordLoginUnsupported)
   let
     resp = req.fetch()
-    respCode = $resp.code
+    respCode = resp.code
     jResp =
       try: resp.body.parseJson()
       except: raiseMalformedURL()
@@ -91,7 +96,7 @@ proc apiLogin(ctx: MatrixContext): MatrixLoginRes =
     logger.log(lvlDebug, jResp.pretty)
   else:
     logger.log(lvlError, jResp.pretty)
-    raiseGeneric("Error occured when trying to log into Matrix instance!")
+    raiseGeneric(exceptMsgPasswordLoginError)
   jResp.to(MatrixLoginRes)
 
 proc apiMsgSend(ctx: MatrixContext, login: MatrixLoginRes): MatrixMsgRes =
@@ -106,7 +111,7 @@ proc apiMsgSend(ctx: MatrixContext, login: MatrixLoginRes): MatrixMsgRes =
       ))
     )
     resp = req.fetch()
-    respCode = $resp.code
+    respCode = resp.code
     jResp =
       try: resp.body.parseJson()
       except: raiseMalformedURL()
@@ -115,7 +120,7 @@ proc apiMsgSend(ctx: MatrixContext, login: MatrixLoginRes): MatrixMsgRes =
     logger.log(lvlDebug, respBody)
   else:
     logger.log(lvlError, respBody)
-    raiseGeneric("Error occured when trying to send message in Matrix room!")
+    raiseGeneric(exceptMsgSendMsgError)
   jResp.to(MatrixMsgRes)
 
 proc postMatrix*(ctx: MatrixContext): bool = apiMsgSend(ctx, apiLogin(ctx)).event_id != ""
