@@ -40,7 +40,7 @@ const
   ]
 
 let
-  logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
+  logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
   prok: Proc = Proc(
     pid: pidUnassigned,
     start: getDefaultTime()

@@ -50,7 +50,7 @@ const
   eventTypeMsg = "m.room.message"
   msgTypeText = "m.text"
 
-let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
+let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
 
 func is20x(code: int): bool = code.intToStr().startsWith("20")
 func genApiLoginURL(baseURL: string): string = baseURL & apiPathLogin

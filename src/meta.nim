@@ -1,3 +1,5 @@
+from logging import Level
+
 const
   debug             * {.booldefine.} = false
   appVersion        * {.strdefine.}  = "0.1.0"
@@ -5,4 +7,7 @@ const
   configPath        * {.strdefine.}  = ""
   configIndentation * {.intdefine.}  = 2
   dirProc           *                = "/proc"
-  
+
+
+func defineLogLevel*(): Level =
+  if debug: lvlNotice else: lvlInfo

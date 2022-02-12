@@ -47,7 +47,7 @@ type
     matrixMessage             *: string
     debug                     *: bool
 
-let logger = newConsoleLogger(lvlInfo, "[$levelname]:[$datetime] ~ ")
+let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
 
 var config* = ProcwatchConfig(
   version: appVersion,
