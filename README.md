@@ -51,7 +51,11 @@ Runs on Linux, what else?
 * Get process watching done. Do not overload with unnecessary features.
 
 ## Project Status
-Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
+Alpha. Unstable API. Model for config JSON will change a lot.
+
+Base functionality plus support for additional external services works.
+However, usage documentation is almost non-existent,
+which means you need to read the code to understand how to use this app.
 
 ## TODO
 * ~~Add Configuration File.~~
@@ -59,6 +63,7 @@ Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Mattermost support.~~
 * ~~Add Matrix support.~~
 * ~~Add Rocket.Chat support.~~
+* Add Usage Documentation.
 * Reach Stability.
 
 ## License
