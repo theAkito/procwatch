@@ -8,6 +8,11 @@ const
   configPath        * {.strdefine.}  = ""
   configIndentation * {.intdefine.}  = 2
   dirProc           *                = "/proc"
+  nameMail          *                = "E-Mail"
+  nameDbus          *                = "Desktop"
+  nameMattermost    *                = "Mattermost"
+  nameMatrix        *                = "Matrix"
+  nameRocketChat    *                = "Rocket.Chat"
 
 
 func defineLogLevel*(): Level =

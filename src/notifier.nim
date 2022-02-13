@@ -16,15 +16,6 @@ import
   notification
 from os import sleep
 
-type NotificationDefect = object of OSError
-
-const
-  nameMail      : string = "E-Mail"
-  nameDbus      : string = "Desktop"
-  nameMattermost: string = "Mattermost"
-  nameMatrix    : string = "Matrix"
-  nameRocketChat: string = "Rocket.Chat"
-
 let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
   intervalPoll                = config.intervalPoll
