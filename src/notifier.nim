@@ -3,17 +3,30 @@ import
   configurator,
   externnotifapi/[
     mattermost,
-    matrix
+    matrix,
+    rocketchat
   ],
   std/[
     smtp,
     with,
-    strutils
+    strutils,
+    strformat,
+    logging
   ],
   notification
 from os import sleep
 
+type NotificationDefect = object of OSError
+
+const
+  nameMail      : string = "E-Mail"
+  nameDbus      : string = "Desktop"
+  nameMattermost: string = "Mattermost"
+  nameMatrix    : string = "Matrix"
+  nameRocketChat: string = "Rocket.Chat"
+
 let
+  logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
   intervalPoll                = config.intervalPoll
   nameSender         : string = config.mailNameSender
   username           : string = config.mailUsername
@@ -25,6 +38,7 @@ let
   mailAddressSource  : string = config.mailAddressSource
   mailAddressTarget  : seq[string] = config.mailAddressTarget
 
+proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:\n" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
 proc notifiyViaMail() =
@@ -38,7 +52,7 @@ proc notifiyViaMail() =
         ("From", "$# <$#>" % [nameSender, mailAddressSource])
       ]
     )
-    smtpConn = newSmtp(debug = debug)
+    smtpConn = newSmtp(debug = meta.debug)
   with smtpConn:
     connect(smtpOutgoing, portOutgoing)
     startTls()
@@ -79,8 +93,26 @@ proc notifyViaMatrix() =
   )
   discard context.postMatrix()
 
+proc notifyViaRocketChat() =
+  var context = RocketChatContext(
+    url: config.rocketChatURL,
+    token: config.rocketChatToken,
+    userID: config.rocketChatUserID,
+    roomID: config.rocketChatRoomID,
+    channel: config.rocketChatChannel,
+    toUser: config.rocketChatUserTarget,
+    message: config.rocketChatMessage
+  )
+  discard context.postRocketChat()
+
 proc notify*() =
-  if config.useMail: notifiyViaMail()
-  if config.useDesktop: notifyViaDbus()
-  if config.useMattermost: notifyViaMattermost()
-  if config.useMatrix: notifyViaMatrix()
+  if config.useMail:
+    try: notifiyViaMail() except: logApiError(nameMail, getCurrentExceptionMsg())
+  if config.useDesktop:
+    try: notifyViaDbus() except: logApiError(nameDbus, getCurrentExceptionMsg())
+  if config.useMattermost:
+    try: notifyViaMattermost() except: logApiError(nameMattermost, getCurrentExceptionMsg())
+  if config.useMatrix:
+    try: notifyViaMatrix() except: logApiError(nameMatrix, getCurrentExceptionMsg())
+  if config.useRocketChat:
+    try: notifyViaRocketChat() except: logApiError(nameRocketChat, getCurrentExceptionMsg())

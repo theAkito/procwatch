@@ -6,6 +6,7 @@ import
   json,
   strutils,
   sequtils,
+  apiutils,
   os,
   logging,
   pkg/[
@@ -52,7 +53,6 @@ const
 
 let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
 
-func is20x(code: int): bool = code.intToStr().startsWith("20")
 func genApiLoginURL(baseURL: string): string = baseURL & apiPathLogin
 func genApiMsgSendPath(roomID, token: string): string = r"/_matrix/client/r0/rooms/$#/send/$#?access_token=$#" % [roomID, eventTypeMsg, token]
 template raiseGeneric(msg: untyped) = raise MatrixDefect.newException(msg)
