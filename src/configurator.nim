@@ -45,6 +45,13 @@ type
     matrixPassword            *: string
     matrixRoomID              *: string
     matrixMessage             *: string
+    rocketChatURL             *: string
+    rocketChatUserID          *: string
+    rocketChatToken           *: string
+    rocketChatRoomID          *: string
+    rocketChatChannel         *: string
+    rocketChatUserTarget      *: string
+    rocketChatMessage         *: string
     debug                     *: bool
 
 let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
