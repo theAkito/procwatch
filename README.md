@@ -63,7 +63,8 @@ which means you need to read the code to understand how to use this app.
 * ~~Add Mattermost support.~~
 * ~~Add Matrix support.~~
 * ~~Add Rocket.Chat support.~~
-* Add Usage Documentation.
+* ~~Add Usage Documentation.~~
+* Add automatically generated messages containing useful information about the finished process.
 * Reach Stability.
 
 ## License
