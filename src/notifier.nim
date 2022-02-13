@@ -29,7 +29,7 @@ let
   mailAddressSource  : string = config.mailAddressSource
   mailAddressTarget  : seq[string] = config.mailAddressTarget
 
-proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:\n" & exceptMsg)
+proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
 proc notifiyViaMail() =
