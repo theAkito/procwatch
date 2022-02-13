@@ -65,7 +65,7 @@ var config* = ProcwatchConfig(
   dbusMessage: "Watched process finished executing.",
   dbusTimeout: 15_000,
   dbusNameIcon: "help-faq",
-  mattermostURL: "http://localhost:8065/api/v4",
+  mattermostURL: "https://mattermost.com",
   mattermostProperties: parseJson("{}"),
   matrixURL: "https://matrix.org",
   matrixMessage: "Process Finished",
