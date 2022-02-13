@@ -26,7 +26,7 @@ const
   nameRocketChat: string = "Rocket.Chat"
 
 let
-  logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
+  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
   intervalPoll                = config.intervalPoll
   nameSender         : string = config.mailNameSender
   username           : string = config.mailUsername

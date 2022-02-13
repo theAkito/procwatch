@@ -18,7 +18,7 @@ type
     fileIDs      * : seq[string] # Optional
     properties   * : JsonNode    # Optional
 
-let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
+let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
 
 proc postMattermost*(ctx: MattermostContext): bool =
   ctx.url.normalizePathEnd()

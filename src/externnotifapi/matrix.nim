@@ -51,7 +51,7 @@ const
   eventTypeMsg = "m.room.message"
   msgTypeText = "m.text"
 
-let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
+let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
 
 func genApiLoginURL(baseURL: string): string = baseURL & apiPathLogin
 func genApiMsgSendPath(roomID, token: string): string = r"/_matrix/client/r0/rooms/$#/send/$#?access_token=$#" % [roomID, eventTypeMsg, token]

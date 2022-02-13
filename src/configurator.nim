@@ -54,7 +54,7 @@ type
     rocketChatMessage         *: string
     debug                     *: bool
 
-let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
+let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
 
 var config* = ProcwatchConfig(
   version: appVersion,
