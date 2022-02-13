@@ -33,8 +33,9 @@ type
 
   RocketChatMsgPostReq = ref object
     ## https://developer.rocket.chat/reference/api/rest-api/endpoints/team-collaboration-endpoints/chat-endpoints/postmessage#payload
-    channel          : string
-    text             : string
+    roomId           : Option[string]
+    channel          : Option[string]
+    text             : Option[string]
     alias            : Option[string]
     emoji            : Option[string]
     avatar           : Option[string]
@@ -56,6 +57,8 @@ const
   exceptMsgRoomsGetErrorAPI = "Unable to retrieve Rooms from Server due to an API error!"
   exceptMsgMsgPostErrorParse = "Unable to post a message due to JSON parsing error!"
   exceptMsgMsgPostErrorAPI = "Unable to post a message due to an API error!"
+  apiTypePrefixUser = "@"
+  apiTypePrefixChannel = "#"
   apiPathRoomsGet = "/api/v1/rooms.get"
   apiPathMsgPost = "/api/v1/chat.postMessage"
 
@@ -63,16 +66,27 @@ let logger = newConsoleLogger(defineLogLevel(), "[$levelname]:[$datetime] ~ ")
 
 func genApiLoginHeaders(userID, token: string): seq[Header] = @[Header(key: "X-User-Id", value: userID), Header(key: "X-Auth-Token", value: token), Header(key: "Content-type", value: "application/json")]
 func genRecipient(ctx: RocketChatContext): string =
-  if ctx.toUser != "": "@" & ctx.toUser else: "#" & ctx.channel
+  if not ctx.toUser.isEmptyOrWhitespace(): apiTypePrefixUser & ctx.toUser
+  elif not ctx.channel.isEmptyOrWhitespace(): apiTypePrefixChannel & ctx.channel
+  else: ctx.roomID
+func genRocketChatMsgPostReq(ctx: RocketChatContext): RocketChatMsgPostReq =
+  let recipient = genRecipient(ctx)
+  if recipient.startsWith(apiTypePrefixUser) or recipient.startsWith(apiTypePrefixChannel):
+    RocketChatMsgPostReq(
+      channel: recipient.some,
+      text: ctx.message.some
+    )
+  else:
+    RocketChatMsgPostReq(
+      roomId: recipient.some,
+      text: ctx.message.some
+    )
 func genRequest(ctx: RocketChatContext, apiPath: string): Request =
   Request(
     url: parseUrl(ctx.url & apiPath),
     verb: if apiPath == apiPathMsgPost: "post" else: "get",
     headers: genApiLoginHeaders(ctx.userID, ctx.token),
-    body: $(%* RocketChatMsgPostReq(
-      channel: genRecipient(ctx),
-      text: ctx.message
-    ))
+    body: $ %* genRocketChatMsgPostReq(ctx)
   )
 
 proc getNameToRoomID(src: RocketChatRoomsGetRes): owned(StringTableRef) =

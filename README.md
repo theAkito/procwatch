@@ -58,6 +58,7 @@ Before Pre-Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add multiple E-Mail recipients support.~~
 * ~~Add Mattermost support.~~
 * ~~Add Matrix support.~~
+* ~~Add Rocket.Chat support.~~
 * Reach Stability.
 
 ## License
