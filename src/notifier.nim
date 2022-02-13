@@ -17,7 +17,7 @@ import
 from os import sleep
 
 let
-  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
+  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "notifier" & logMsgSuffix)
   intervalPoll                = config.intervalPoll
   nameSender         : string = config.mailNameSender
   username           : string = config.mailUsername

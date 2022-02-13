@@ -54,7 +54,7 @@ type
     rocketChatMessage         *: string
     debug                     *: bool
 
-let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
+let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
 
 var config* = ProcwatchConfig(
   version: appVersion,

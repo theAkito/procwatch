@@ -62,7 +62,7 @@ const
   apiPathRoomsGet = "/api/v1/rooms.get"
   apiPathMsgPost = "/api/v1/chat.postMessage"
 
-let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
+let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & nameRocketChat & logMsgSuffix)
 
 func genApiLoginHeaders(userID, token: string): seq[Header] = @[Header(key: "X-User-Id", value: userID), Header(key: "X-Auth-Token", value: token), Header(key: "Content-type", value: "application/json")]
 func genRecipient(ctx: RocketChatContext): string =

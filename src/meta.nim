@@ -3,6 +3,8 @@ from logging import Level
 const
   debug             * {.booldefine.} = false
   logMsgPrefix      * {.strdefine.}  = "[$levelname]:[$datetime]"
+  logMsgInter       * {.strdefine.}  = " ~ "
+  logMsgSuffix      * {.strdefine.}  = " -> "
   appVersion        * {.strdefine.}  = "0.1.0"
   configName        * {.strdefine.}  = "procwatch.json"
   configPath        * {.strdefine.}  = ""

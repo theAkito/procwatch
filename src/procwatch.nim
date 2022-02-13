@@ -40,7 +40,7 @@ const
   ]
 
 let
-  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & " ~ ")
+  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "master" & logMsgSuffix)
   prok: Proc = Proc(
     pid: pidUnassigned,
     start: getDefaultTime()
