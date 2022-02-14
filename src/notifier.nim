@@ -2,103 +2,34 @@ import
   meta,
   configurator,
   externnotifapi/[
+    mail,
+    dbus,
     mattermost,
     matrix,
     rocketchat
   ],
   std/[
-    smtp,
-    with,
-    strutils,
     strformat,
     logging
-  ],
-  notification
+  ]
 from os import sleep
 
 let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "notifier" & logMsgSuffix)
   intervalPoll                = config.intervalPoll
-  nameSender         : string = config.mailNameSender
-  username           : string = config.mailUsername
-  password           : string = config.mailPassword
-  subject            : string = config.mailSubject
-  message            : string = config.mailMessage
-  portOutgoing       : Port = config.mailPortOutgoing.Port
-  smtpOutgoing       : string = config.mailSmtpServerOutgoing
-  mailAddressSource  : string = config.mailAddressSource
-  mailAddressTarget  : seq[string] = config.mailAddressTarget
 
 proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
-proc notifiyViaMail() =
-  let
-    msg = createMessage(
-      subject,
-      message,
-      mailAddressTarget, #[Addressee]#
-      @[], #[CC]#
-      @[ #[Headers]#
-        ("From", "$# <$#>" % [nameSender, mailAddressSource])
-      ]
-    )
-    smtpConn = newSmtp(debug = meta.debug)
-  with smtpConn:
-    connect(smtpOutgoing, portOutgoing)
-    startTls()
-    auth(username, password)
-    sendMail(mailAddressSource, mailAddressTarget, $msg)
-
-proc notifyViaDbus() =
-  var notification = initNotification(
-    summary = config.dbusSummary,
-    body = config.dbusMessage,
-    icon = config.dbusNameIcon,
-    timeout = initTimeout(config.dbusTimeout)
-  )
-  notification.add Hint(kind: hkUrgency, urgency: Normal)
-  discard notification.notify()
-
-proc notifyViaMattermost() =
-  var context = MattermostContext(
-    url: config.mattermostURL,
-    loginID: config.mattermostLoginID,
-    password: config.mattermostPassword,
-    token: config.mattermostToken,
-    channelID: config.mattermostChannelID,
-    message: config.mattermostMessage,
-    rootID: config.mattermostRootID,
-    fileIDs: config.mattermostFileIDs,
-    properties: config.mattermostProperties
-  )
-  discard context.postMattermost()
-
-proc notifyViaMatrix() =
-  var context = MatrixContext(
-    url: config.matrixURL,
-    username: config.matrixUsername,
-    password: config.matrixPassword,
-    roomID: config.matrixRoomID,
-    message: config.matrixMessage
-  )
-  discard context.postMatrix()
-
-proc notifyViaRocketChat() =
-  var context = RocketChatContext(
-    url: config.rocketChatURL,
-    token: config.rocketChatToken,
-    userID: config.rocketChatUserID,
-    roomID: config.rocketChatRoomID,
-    channel: config.rocketChatChannel,
-    toUser: config.rocketChatUserTarget,
-    message: config.rocketChatMessage
-  )
-  discard context.postRocketChat()
+proc notifyViaMail() = sendMail(ctx = config.mail)
+proc notifyViaDbus() = config.dbus.broadcastDbus()
+proc notifyViaMattermost() = discard config.mattermost.postMattermost()
+proc notifyViaMatrix() = discard config.matrix.postMatrix()
+proc notifyViaRocketChat() = discard config.rocketchat.postRocketChat()
 
 proc notify*() =
   if config.useMail:
-    try: notifiyViaMail() except: logApiError(nameMail, getCurrentExceptionMsg())
+    try: notifyViaMail() except: logApiError(nameMail, getCurrentExceptionMsg())
   if config.useDesktop:
     try: notifyViaDbus() except: logApiError(nameDbus, getCurrentExceptionMsg())
   if config.useMattermost:

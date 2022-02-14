@@ -33,6 +33,7 @@ func prepApiUrl(ctx: MattermostContext) = ctx.url = appendApiPathRoot(ctx.url)
 
 proc apiMsgPost(ctx: MattermostContext): JsonNode =
   ctx.prepApiUrl()
+  logger.log(lvlDebug, pretty(%* ctx))
   let
     req = Request(
       url: parseUrl(ctx.url & "/posts"),

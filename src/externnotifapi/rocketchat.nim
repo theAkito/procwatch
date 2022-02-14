@@ -115,6 +115,7 @@ proc apiRoomsGet(ctx: RocketChatContext): RocketChatRoomsGetRes =
 
 proc apiMsgPost(ctx: RocketChatContext): RocketChatMsgPostRes =
   ctx.url.normalizePathEnd()
+  logger.log(lvlDebug, pretty(%* ctx))
   let
     req = genRequest(ctx, apiPathMsgPost)
     resp = req.fetch()

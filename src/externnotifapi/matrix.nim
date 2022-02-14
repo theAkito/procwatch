@@ -101,6 +101,7 @@ proc apiLogin(ctx: MatrixContext): MatrixLoginRes =
 
 proc apiMsgSend(ctx: MatrixContext, login: MatrixLoginRes): MatrixMsgRes =
   ctx.url.normalizePathEnd()
+  logger.log(lvlDebug, pretty(%* ctx))
   let
     req = Request(
       url: parseUrl(ctx.url & genApiMsgSendPath(ctx.roomID, login.access_token)),

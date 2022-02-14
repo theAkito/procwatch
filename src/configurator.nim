@@ -5,9 +5,14 @@ import
   os,
   logging,
   strutils
+from externnotifapi/mail import MailContext
+from externnotifapi/dbus import DBusContext
+from externnotifapi/mattermost import MattermostContext
+from externnotifapi/matrix import MatrixContext
+from externnotifapi/rocketchat import RocketChatContext
 
 type
-  ProcwatchConfig = object
+  MasterConfig = object
     version                   *: string
     intervalPoll              *: int
     useMail                   *: bool
@@ -17,67 +22,57 @@ type
     useRocketChat             *: bool
     useRevoltChat             *: bool
     useMumble                 *: bool
-    mailNameSender            *: string
-    mailUsername              *: string
-    mailPassword              *: string
-    mailSubject               *: string
-    mailMessage               *: string
-    mailPortOutgoing          *: int
-    mailSmtpServerOutgoing    *: string
-    mailAddressSource         *: string
-    mailAddressTarget         *: seq[string]
-    dbusNameApp               *: string
-    dbusSummary               *: string
-    dbusMessage               *: string
-    dbusNameIcon              *: string
-    dbusTimeout               *: int32
-    mattermostURL             *: string
-    mattermostLoginID         *: string
-    mattermostPassword        *: string
-    mattermostToken           *: string
-    mattermostChannelID       *: string
-    mattermostMessage         *: string
-    mattermostRootID          *: string
-    mattermostFileIDs         *: seq[string]
-    mattermostProperties      *: JsonNode
-    matrixURL                 *: string
-    matrixUsername            *: string
-    matrixPassword            *: string
-    matrixRoomID              *: string
-    matrixMessage             *: string
-    rocketChatURL             *: string
-    rocketChatUserID          *: string
-    rocketChatToken           *: string
-    rocketChatRoomID          *: string
-    rocketChatChannel         *: string
-    rocketChatUserTarget      *: string
-    rocketChatMessage         *: string
+    mail                      *: MailContext
+    dbus                      *: DBusContext
+    mattermost                *: MattermostContext
+    matrix                    *: MatrixContext
+    rocketchat                *: RocketChatContext
     debug                     *: bool
 
 let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
 
-var config* = ProcwatchConfig(
-  version: appVersion,
-  intervalPoll: 5_000,
-  mailPortOutgoing: 587,
-  dbusNameApp: "Process Watcher",
-  dbusSummary: "Process Finished",
-  dbusMessage: "Watched process finished executing.",
-  dbusTimeout: 15_000,
-  dbusNameIcon: "help-faq",
-  mattermostURL: "https://mattermost.com",
-  mattermostProperties: parseJson("{}"),
-  matrixURL: "https://matrix.org",
-  matrixMessage: "Process Finished",
-  debug: meta.debug
-)
+var
+  mailContext = MailContext(
+    message: defaultMsg,
+    portOutgoing: 587
+  )
+  dbusContext = DBusContext(
+    nameApp: "Process Watcher",
+    summary: defaultMsg,
+    message: "Watched process finished executing.",
+    timeout: 15_000,
+    nameIcon: "help-faq",
+  )
+  mattermostContext = MattermostContext(
+    url: "https://mattermost.com",
+    message: defaultMsg,
+    properties: parseJson("{}"),
+  )
+  matrixContext = MatrixContext(
+    url: "https://matrix.org",
+    message: defaultMsg,
+  )
+  rocketChatContext = RocketChatContext(
+    url: "https://example.rocket.chat",
+    message: defaultMsg
+  )
+  config* = MasterConfig(
+    version: appVersion,
+    intervalPoll: 5_000,
+    mail: mailContext,
+    dbus: dbusContext,
+    mattermost: mattermostContext,
+    matrix: matrixContext,
+    rocketchat: rocketChatContext,
+    debug: meta.debug
+  )
 
 func pretty(node: JsonNode): string = node.pretty(configIndentation)
 
 func genPathFull(path, name: string): string =
   if path != "": path.normalizePathEnd() & '/' & name else: name
 
-proc getConfig*(): ProcwatchConfig = config
+proc getConfig*(): MasterConfig = config
 
 proc genDefaultConfig(path = configPath, name = configName): JsonNode =
   let
@@ -92,10 +87,10 @@ proc initConf*(path = configPath, name = configName): bool =
     configAlreadyExists = pathFull.fileExists
   if configAlreadyExists:
     logger.log(lvlDebug, "Config already exists! Not generating new one.")
-    config = pathFull.parseFile().to(ProcwatchConfig)
-    config.mailPassword = config.mailPassword.decode()
-    config.mattermostPassword = config.mattermostPassword.decode()
-    config.matrixPassword = config.matrixPassword.decode()
+    config = pathFull.parseFile().to(MasterConfig)
+    config.mail.password = config.mail.password.decode()
+    config.mattermost.password = config.mattermost.password.decode()
+    config.matrix.password = config.matrix.password.decode()
     return true
   try:
     genDefaultConfig(path, name)
