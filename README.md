@@ -53,10 +53,6 @@ Runs on Linux, what else?
 ## Project Status
 Alpha. Unstable API. Model for config JSON will change a lot.
 
-Base functionality plus support for additional external services works.
-However, usage documentation is almost non-existent,
-which means you need to read the code to understand how to use this app.
-
 ## TODO
 * ~~Add Configuration File.~~
 * ~~Add multiple E-Mail recipients support.~~

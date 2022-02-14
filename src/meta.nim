@@ -2,6 +2,7 @@ from logging import Level
 
 const
   debug             * {.booldefine.} = false
+  defaultMsg        * {.strdefine.}  = "Process Finished"
   logMsgPrefix      * {.strdefine.}  = "[$levelname]:[$datetime]"
   logMsgInter       * {.strdefine.}  = " ~ "
   logMsgSuffix      * {.strdefine.}  = " -> "
