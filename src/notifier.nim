@@ -21,7 +21,7 @@ let
 proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
-proc notifyViaMail() = sendMail(ctx = config.mail)
+proc notifyViaMail() = config.mail.sendMail()
 proc notifyViaDbus() = config.dbus.broadcastDbus()
 proc notifyViaMattermost() = discard config.mattermost.postMattermost()
 proc notifyViaMatrix() = discard config.matrix.postMatrix()

@@ -22,23 +22,7 @@ Example installation for Debian based distributions:
 apt install -y libdbus-1-dev libssl-dev
 ```
 
-Send an e-mail, when process with the PID `314` exits.
-
-```bash
-procwatch --pid=314 --to=mail@boom.me
-```
-
-Watch all processes of the name `appy`. Dispatch a desktop notification, instead of an e-mail.
-
-```bash
-procwatch --notify appy
-```
-
-For more advanced possibilities, check the `help` on the command line.
-
-```bash
-procwatch --help
-```
+For usage information, check out the [Usage Guide](https://github.com/theAkito/procwatch/wiki/Usage-Guide).
 
 ## Where
 For now, you can download pre-compiled binaries in the Releases section of this repository.

@@ -78,7 +78,8 @@ proc waitForProksMulti() =
   while areProksRunningsLive(): waitPoll()
 
 proc showHelp() =
-  echo "Help Text!"
+  echo "Check out the Usage Guide: "
+  echo "https://github.com/theAkito/procwatch/wiki/Usage-Guide"
 
 proc setOpts() =
   for kind, key, val in getopt(commandLineParams()):
@@ -189,14 +190,19 @@ proc run() =
   #[ Manifest command line options. ]#
   setOpts()
   #[ Gather data regarding selected process. ]#
-  setProkInfo(true)
+  try:
+    setProkInfo(true)
+  except:
+    logger.log(lvlError, getCurrentExceptionMsg())
+    showHelp()
+    quit(2)
   let proksFoundByNameAreAvailable = proksFoundByName.len != 0
   #[ Find out, if a single process or a process group is being watched by name. ]#
   if proksFoundByNameAreAvailable:
     logger.log(lvlDebug, "Proks found by name are available.")
   elif not isProkRunning():
     logger.log(lvlError, "Process with pid $# and name $# is not running!" % [$prok.pid, prok.name])
-    quit(2)
+    quit(3)
   if proksFoundByNameAreAvailable:
     #[ Multiple processes are being watched by name. ]#
     waitForProksMulti()
