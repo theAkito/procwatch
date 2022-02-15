@@ -3,6 +3,7 @@
 [![Source](https://img.shields.io/badge/project-source-2a2f33?style=plastic)](https://github.com/theAkito/procwatch)
 [![Language](https://img.shields.io/badge/language-Nim-orange.svg?style=plastic)](https://nim-lang.org/)
 
+![Last Commit](https://img.shields.io/github/last-commit/theAkito/procwatch?style=plastic)
 
 [![GitHub](https://img.shields.io/badge/license-GPL--3.0-informational?style=plastic)](https://www.gnu.org/licenses/gpl-3.0.txt)
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/Akito?style=plastic)](https://liberapay.com/Akito/)
@@ -44,6 +45,7 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Matrix support.~~
 * ~~Add Rocket.Chat support.~~
 * ~~Add Usage Documentation.~~
+* Add Gotify support.
 * Add automatically generated messages containing useful information about the finished process.
 * Reach Stability.
 
