@@ -10,6 +10,7 @@ from externnotifapi/dbus import DBusContext
 from externnotifapi/mattermost import MattermostContext
 from externnotifapi/matrix import MatrixContext
 from externnotifapi/rocketchat import RocketChatContext
+from externnotifapi/gotify import GotifyContext
 
 type
   MasterConfig = object
@@ -20,6 +21,7 @@ type
     useMattermost             *: bool
     useMatrix                 *: bool
     useRocketChat             *: bool
+    useGotify                 *: bool
     useRevoltChat             *: bool
     useMumble                 *: bool
     mail                      *: MailContext
@@ -27,9 +29,12 @@ type
     mattermost                *: MattermostContext
     matrix                    *: MatrixContext
     rocketchat                *: RocketChatContext
+    gotify                    *: GotifyContext
     debug                     *: bool
 
-let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
+let
+  jNodeEmpty = parseJson("{}")
+  logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
 
 var
   mailContext = MailContext(
@@ -41,20 +46,26 @@ var
     summary: defaultMsg,
     message: "Watched process finished executing.",
     timeout: 15_000,
-    nameIcon: "help-faq",
+    nameIcon: "help-faq"
   )
   mattermostContext = MattermostContext(
     url: "https://mattermost.com",
     message: defaultMsg,
-    properties: parseJson("{}"),
+    properties: jNodeEmpty
   )
   matrixContext = MatrixContext(
     url: "https://matrix.org",
-    message: defaultMsg,
+    message: defaultMsg
   )
   rocketChatContext = RocketChatContext(
     url: "https://example.rocket.chat",
     message: defaultMsg
+  )
+  gotifyContext = GotifyContext(
+    url: "https://gotify.net/",
+    title: defaultMsg,
+    message: "Watched process finished executing.",
+    extras: jNodeEmpty
   )
   config* = MasterConfig(
     version: appVersion,
@@ -64,6 +75,7 @@ var
     mattermost: mattermostContext,
     matrix: matrixContext,
     rocketchat: rocketChatContext,
+    gotify: gotifyContext,
     debug: meta.debug
   )
 

@@ -6,7 +6,8 @@ import
     dbus,
     mattermost,
     matrix,
-    rocketchat
+    rocketchat,
+    gotify
   ],
   std/[
     strformat,
@@ -26,6 +27,7 @@ proc notifyViaDbus() = config.dbus.broadcastDbus()
 proc notifyViaMattermost() = discard config.mattermost.postMattermost()
 proc notifyViaMatrix() = discard config.matrix.postMatrix()
 proc notifyViaRocketChat() = discard config.rocketchat.postRocketChat()
+proc notifyViaGotify() = discard config.gotify.postGotify()
 
 proc notify*() =
   if config.useMail:
@@ -38,3 +40,5 @@ proc notify*() =
     try: notifyViaMatrix() except: logApiError(nameMatrix, getCurrentExceptionMsg())
   if config.useRocketChat:
     try: notifyViaRocketChat() except: logApiError(nameRocketChat, getCurrentExceptionMsg())
+  if config.useGotify:
+    try: notifyViaGotify() except: logApiError(nameGotify, getCurrentExceptionMsg())

@@ -16,6 +16,7 @@ const
   nameMattermost    *                = "Mattermost"
   nameMatrix        *                = "Matrix"
   nameRocketChat    *                = "Rocket.Chat"
+  nameGotify        *                = "Gotify"
 
 
 func defineLogLevel*(): Level =
