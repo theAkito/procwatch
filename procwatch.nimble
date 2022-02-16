@@ -39,7 +39,8 @@ task fbuild, "Build project.":
             --define:ssl \
             --opt:speed \
             --out:procwatch \
-            src/procwatch
+            src/procwatch && \
+          strip procwatch
        """
 task dbuild, "Debug Build project.":
   exec """nim c \
@@ -49,6 +50,16 @@ task dbuild, "Debug Build project.":
             --out:procwatch \
             src/procwatch
        """
+# https://github.com/treeform/hottie/issues/11
+# task pbuild, "Debug Build project for sampling profiler.":
+#   exec """nim c \
+#             --passL:"-no-pie" \
+#             --define:ssl \
+#             --define:danger \
+#             --debugger:native \
+#             --out:procwatch \
+#             src/procwatch
+#        """
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim tasks/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":
