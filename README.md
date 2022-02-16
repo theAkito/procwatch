@@ -45,7 +45,9 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Matrix support.~~
 * ~~Add Rocket.Chat support.~~
 * ~~Add Usage Documentation.~~
-* Add Gotify support.
+* ~~Add Gotify support.~~
+* Add NodeBB support.
+* Add Discourse support.
 * Add automatically generated messages containing useful information about the finished process.
 * Reach Stability.
 

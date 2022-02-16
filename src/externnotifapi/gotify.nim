@@ -80,5 +80,4 @@ proc apiMsgCreate(ctx: GotifyContext): GotifyMsgPostRes =
     raise GotifyDefect.newException(exceptMsgMsgPostErrorAPI)
   jResp.to(GotifyMsgPostRes)
 
-proc postGotify*(ctx: GotifyContext): bool =
-  ctx.apiMsgCreate().id != 0
+proc postGotify*(ctx: GotifyContext): bool = ctx.apiMsgCreate().id != 0
