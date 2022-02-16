@@ -29,16 +29,14 @@ proc notifyViaMatrix() = discard config.matrix.postMatrix()
 proc notifyViaRocketChat() = discard config.rocketchat.postRocketChat()
 proc notifyViaGotify() = discard config.gotify.postGotify()
 
+template notify(enabled: bool, doNotify: proc, nameService: string): untyped =
+  if enabled:
+    try: doNotify() except: logApiError(nameService, getCurrentExceptionMsg())
+
 proc notify*() =
-  if config.useMail:
-    try: notifyViaMail() except: logApiError(nameMail, getCurrentExceptionMsg())
-  if config.useDesktop:
-    try: notifyViaDbus() except: logApiError(nameDbus, getCurrentExceptionMsg())
-  if config.useMattermost:
-    try: notifyViaMattermost() except: logApiError(nameMattermost, getCurrentExceptionMsg())
-  if config.useMatrix:
-    try: notifyViaMatrix() except: logApiError(nameMatrix, getCurrentExceptionMsg())
-  if config.useRocketChat:
-    try: notifyViaRocketChat() except: logApiError(nameRocketChat, getCurrentExceptionMsg())
-  if config.useGotify:
-    try: notifyViaGotify() except: logApiError(nameGotify, getCurrentExceptionMsg())
+  notify(config.useMail      , notifyViaMail      , nameMail)
+  notify(config.useDesktop   , notifyViaDbus      , nameDbus)
+  notify(config.useMattermost, notifyViaMattermost, nameMattermost)
+  notify(config.useMatrix    , notifyViaMatrix    , nameMatrix)
+  notify(config.useRocketChat, notifyViaRocketChat, nameRocketChat)
+  notify(config.useGotify    , notifyViaGotify    , nameGotify)
