@@ -36,10 +36,7 @@ type
 
 const
   pidUnassigned = -1
-  pidsInvalid = [
-    pidUnassigned,
-    0
-  ]
+  pidsInvalid = [ pidUnassigned, 0 ]
 
 let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "master" & logMsgSuffix)
@@ -59,12 +56,8 @@ func basename(path: string): string =
   pathSplit[pathSplit.high]
 
 func basenamePid(path: string): int =
-  let
-    basename = basename(path)
-    pid =
-      try: basename.parseInt
-      except ValueError: pidUnassigned
-  pid
+  try: basename(path).parseInt
+  except ValueError: pidUnassigned
 
 proc getDefaultTime(): DateTime = initTimeStamp(0).toDateTime
 proc constructPathPid(pid: int): string = dirProc.joinPath($pid)
@@ -84,7 +77,7 @@ proc showHelp() =
   echo "https://github.com/theAkito/procwatch/wiki/Usage-Guide"
 
 proc setOpts() =
-  for kind, key, val in getopt(commandLineParams()):
+  for kind, key, val in commandLineParams().getopt():
     case kind
       of cmdArgument:
         try:
@@ -108,14 +101,11 @@ proc findPidsByName(name: string): seq[int] =
   for pid in pidsRunning:
     var cmd = pid.readCmdName()
     cmd.stripLineEnd()
-    if cmd == name:
-      result.add pid
+    if cmd == name: result.add pid
 
 proc readProcCreationTime(pid: int): DateTime = 
-  try:
-    constructPathPid(pid).open(fmRead).getFileInfo().creationTime.toTimestamp().toDateTime()
-  except:
-    getDefaultTime()
+  try: constructPathPid(pid).open(fmRead).getFileInfo().creationTime.toTimestamp().toDateTime()
+  except: getDefaultTime()
 
 proc getProkInfos(pids: seq[int]): seq[Proc] =
   for pid in pids:
@@ -163,12 +153,7 @@ proc readRunningPids(): seq[int] =
         if not pidsInvalid.anyIt(it == pid): result.add pid
       else: continue
 
-proc isProkRunningLive(): bool =
-  pidsRunning = readRunningPids()
-  if pidsRunning.contains(prok.pid):
-    true
-  else:
-    false
+proc isProkRunningLive(): bool = readRunningPids().contains(prok.pid)
 
 proc areProksRunningsLive(): bool =
   if proksFoundByName.len == 0: return false
@@ -179,14 +164,11 @@ proc areProksRunningsLive(): bool =
     All processes of the same name have to be finished,
     before calling it a day.
   ]#
-  if pidsFoundByName.anyIt(pidsRunning.contains(it)):
-    true
-  else:
-    false
+  pidsFoundByName.anyIt(pidsRunning.contains(it))
 
 proc run() =
   #[ Initialise configuration file. ]#
-  if not initConf(configPath): raise OSError.newException("Config file could not neither be found nor generated!")
+  if not initConf(configPath): raise OSError.newException("Config file could neither be found nor generated!")
   #[ Discover running processes by PID in /proc. ]#
   pidsRunning = readRunningPids()
   #[ Manifest command line options. ]#
