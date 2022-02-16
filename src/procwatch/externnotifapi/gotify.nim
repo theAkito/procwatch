@@ -39,15 +39,13 @@ type
     extras   : Option[JsonNode]
 
 const
-  exceptMsgMsgPostErrorParse = "Unable to post a message due to JSON parsing error!"
-  exceptMsgMsgPostErrorAPI = "Unable to post a message due to an API error!"
   apiPathMsgCreate = "/message"
   apiHeaderNameToken = "X-Gotify-Key"
 
 let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & nameGotify & logMsgSuffix)
 
 func genApiUrlMsg(ctx: GotifyContext): string = ctx.url.normalizePathEnd(); ctx.url & apiPathMsgCreate
-func genApiHeaders(ctx: GotifyContext): seq[Header] = @[Header(key: apiHeaderNameToken, value: ctx.token), Header(key: "Content-type", value: "application/json")]
+func genApiHeaders(ctx: GotifyContext): seq[Header] = @[Header(key: apiHeaderNameToken, value: ctx.token), headerJson]
 func genGotifyMsgPostReq(ctx: GotifyContext): GotifyMsgPostReq =
   GotifyMsgPostReq(
     title: ctx.title,

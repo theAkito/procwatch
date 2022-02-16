@@ -17,7 +17,7 @@ from os import sleep
 
 let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "notifier" & logMsgSuffix)
-  intervalPoll                = config.intervalPoll
+  intervalPoll = config.intervalPoll
 
 proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll

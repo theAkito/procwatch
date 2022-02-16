@@ -38,7 +38,7 @@ proc apiMsgPost(ctx: MattermostContext): JsonNode =
     req = Request(
       url: parseUrl(ctx.url & "/posts"),
       verb: "post",
-      headers: @[Header(key: "Authorization", value: "Bearer " & ctx.token)],
+      headers: @[Header(key: "Authorization", value: "Bearer " & ctx.token), headerJson],
       body: "{ \"channel_id\": \"$#\", \"message\": \"$#\", \"root_id\": \"$#\", \"file_ids\": \"$#\", \"props\": \"$#\" }" % [ctx.channelID, ctx.message, ctx.rootID, $(% ctx.fileIDs), $ctx.properties]
     )
     resp = req.fetch()

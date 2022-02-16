@@ -55,8 +55,6 @@ type
 const
   exceptMsgRoomsGetErrorParse = "Unable to retrieve Rooms from Server due to a JSON parsing error!"
   exceptMsgRoomsGetErrorAPI = "Unable to retrieve Rooms from Server due to an API error!"
-  exceptMsgMsgPostErrorParse = "Unable to post a message due to JSON parsing error!"
-  exceptMsgMsgPostErrorAPI = "Unable to post a message due to an API error!"
   apiTypePrefixUser = "@"
   apiTypePrefixChannel = "#"
   apiPathRoomsGet = "/api/v1/rooms.get"
@@ -64,7 +62,7 @@ const
 
 let logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & nameRocketChat & logMsgSuffix)
 
-func genApiLoginHeaders(userID, token: string): seq[Header] = @[Header(key: "X-User-Id", value: userID), Header(key: "X-Auth-Token", value: token), Header(key: "Content-type", value: "application/json")]
+func genApiLoginHeaders(userID, token: string): seq[Header] = @[Header(key: "X-User-Id", value: userID), Header(key: "X-Auth-Token", value: token), headerJson]
 func genRecipient(ctx: RocketChatContext): string =
   if not ctx.toUser.isEmptyOrWhitespace(): apiTypePrefixUser & ctx.toUser
   elif not ctx.channel.isEmptyOrWhitespace(): apiTypePrefixChannel & ctx.channel
