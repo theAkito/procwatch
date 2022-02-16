@@ -1,5 +1,4 @@
 import
-  meta,
   os,
   logging,
   parseopt,
@@ -7,8 +6,11 @@ import
   sequtils,
   times,
   timestamp,
-  notifier,
-  configurator
+  procwatch/[
+    meta,
+    notifier,
+    configurator
+  ]
 
 proc getDefaultTime(): DateTime
 proc isProkRunningLive(): bool
