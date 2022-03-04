@@ -33,7 +33,7 @@ type
     debug                     *: bool
 
 let
-  jNodeEmpty = parseJson("{}")
+  jNodeEmpty = newJObject()
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
 
 var
