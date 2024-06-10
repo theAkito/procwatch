@@ -74,10 +74,9 @@ task docker_build_prod, "Build Production Docker.":
   exec &"""nim c \
             --define:appVersion:"{buildVersion}" \
             --define:appDate:"{gorge "date"}" \
-            --define:configPath:/data \
+            --define:configPath:/data/config \
             --define:logDirPath:/data/logs \
             --define:dirProc:/data/proc \
-            --define:configPath:/data/config \
             --define:danger \
             --define:ssl \
             --opt:speed \
@@ -97,10 +96,9 @@ task docker_build_debug, "Build Debug Docker.":
             --define:appVersion:"{buildVersion}" \
             --define:appDate:"{gorge "date"}" \
             --define:debug:true \
-            --define:configPath:/data \
+            --define:configPath:/data/config \
             --define:logDirPath:/data/logs \
             --define:dirProc:/data/proc \
-            --define:configPath:/data/config \
             --define:ssl \
             --debugger:native \
             --debuginfo:on \
