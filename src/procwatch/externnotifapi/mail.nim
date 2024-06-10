@@ -2,10 +2,12 @@ import
   ../meta,
   std/[
     json,
-    smtp,
     with,
     strutils,
     logging
+  ],
+  pkg/[
+    smtp
   ]
 
 type
