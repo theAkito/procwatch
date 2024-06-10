@@ -1,4 +1,4 @@
-FROM akito13/nim:2.0.0-alpine AS build
+FROM akito13/nim:2.0.4-alpine AS build
 
 ARG nimble_task_build=docker_build_debug
 ARG app_version=0.2.0
