@@ -23,6 +23,11 @@ Example installation for Debian based distributions:
 apt install -y libdbus-1-dev libssl-dev
 ```
 
+### Docker
+```bash
+docker run --rm --user "$(id -u):$(id -g)" --volume "/proc:/data/proc" --volume "./procwatch/config:/data/config" -it akito13/procwatch 1234 # Replace `1234` with the PID you are watching.
+```
+
 For usage information, check out the [Usage Guide](https://github.com/theAkito/procwatch/wiki/Usage-Guide).
 
 ## Where

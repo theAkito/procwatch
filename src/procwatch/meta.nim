@@ -10,7 +10,7 @@ const
   configName        * {.strdefine.}  = "procwatch.json"
   configPath        * {.strdefine.}  = ""
   configIndentation * {.intdefine.}  = 2
-  dirProc           *                = "/proc"
+  dirProc           * {.strdefine.}  = "/proc"
   nameMail          *                = "E-Mail"
   nameDbus          *                = "Desktop"
   nameMattermost    *                = "Mattermost"
