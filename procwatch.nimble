@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.2.0"
 author        = "Akito <the@akito.ooo>"
 description   = "Get notified by e-mail or notification, once a Linux process finishes."
 license       = "GPL-3.0-or-later"
@@ -13,54 +13,95 @@ skipExt       = @["nim"]
 
 # Dependencies
 
-requires "nim          >= 1.4.0"
-requires "timestamp    >= 0.4.2"
-requires "notification >= 0.2.0"
-requires "puppy        >= 1.0.3"
+requires "nim          >= 2.0.4" ## https://github.com/nim-lang/Nim
+requires "timestamp    >= 0.4.2" ## https://github.com/jackhftang/timestamp.nim
+requires "notification >= 0.2.0" ## https://github.com/SolitudeSF/notification
+requires "puppy        >= 2.1.2" ## https://github.com/treeform/puppy
+requires "smtp#8013aa199dedd04905d46acf3484a232378de518" ## https://github.com/nim-lang/smtp/issues/9
 
 
 # Tasks
+import os, strformat, strutils
 
-task intro, "Initialize project. Run only once at first pull.":
-  exec "git submodule add https://github.com/theAkito/nim-tools.git tasks || true"
-  exec "git submodule update --init --recursive"
-  exec "git submodule update --recursive --remote"
-  exec "nimble configure"
+const defaultVersion = "unreleased"
+
+let
+  buildParams   = if paramCount() > 8: commandLineParams()[8..^1] else: @[]    ## Actual arguments passed to task. Previous arguments are only for internal use.
+  buildVersion  = if buildParams.len > 0: buildParams[^1] else: defaultVersion ## Semver compliant App Version
+  buildRevision = gorge """git log -1 --format="%H""""                         ## Build revision, i.e. Git Commit Hash
+  buildDate     = gorge """date"""                                             ## Build date; Example: Sun 10 Apr 2022 01:13:09 AM CEST
+
 task configure, "Configure project. Run whenever you continue contributing to this project.":
   exec "git fetch --all"
   exec "nimble check"
   exec "nimble --silent refresh"
-  exec "nimble install --accept --depsOnly"
-  exec "sudo apt install -y libdbus-1-dev libssl-dev >/dev/null"
+  exec "nimble install --accept --depsOnly --verbose"
   exec "git status"
-task fbuild, "Build project.":
-  exec """nim c \
+task fbuild, "Build Production Project.":
+  exec &"""nim c \
+            --define:appVersion:"{buildVersion}" \
+            --define:appRevision:"{buildRevision}" \
+            --define:appDate:"{buildDate}" \
             --define:danger \
             --define:ssl \
             --opt:speed \
+            --excessiveStackTrace:off \
             --out:procwatch \
             src/procwatch && \
-          strip procwatch
+          strip procwatch \
+            --strip-all \
+            --remove-section=.comment \
+            --remove-section=.note.gnu.gold-version \
+            --remove-section=.note \
+            --remove-section=.note.gnu.build-id \
+            --remove-section=.note.ABI-tag
        """
-task dbuild, "Debug Build project.":
-  exec """nim c \
+task dbuild, "Build Debug Project.":
+  exec &"""nim c \
+            --define:appVersion:"{buildVersion}" \
+            --define:appRevision:"{buildRevision}" \
+            --define:appDate:"{buildDate}" \
             --define:debug:true \
             --define:ssl \
+            --debugger:native \
             --debuginfo:on \
-            --out:procwatch \
+            --opt:none \
+            --excessiveStackTrace:off \
+            --out:procwatch_debug \
             src/procwatch
        """
-# https://github.com/treeform/hottie/issues/11
-# task pbuild, "Debug Build project for sampling profiler.":
-#   exec """nim c \
-#             --passL:"-no-pie" \
-#             --define:ssl \
-#             --define:danger \
-#             --debugger:native \
-#             --out:procwatch \
-#             src/procwatch
-#        """
-task makecfg, "Create nim.cfg for optimized builds.":
-  exec "nim tasks/cfg_optimized.nims"
-task clean, "Removes nim.cfg.":
-  exec "nim tasks/cfg_clean.nims"
+task docker_build_prod, "Build Production Docker.":
+  exec &"""nim c \
+            --define:appVersion:"{buildVersion}" \
+            --define:appDate:"{gorge "date"}" \
+            --define:configPath:/data \
+            --define:logDirPath:/data/logs \
+            --define:danger \
+            --define:ssl \
+            --opt:speed \
+            --excessiveStackTrace:off \
+            --out:app \
+            src/procwatch && \
+          strip app \
+            --strip-all \
+            --remove-section=.comment \
+            --remove-section=.note.gnu.gold-version \
+            --remove-section=.note \
+            --remove-section=.note.gnu.build-id \
+            --remove-section=.note.ABI-tag
+       """
+task docker_build_debug, "Build Debug Docker.":
+  exec &"""nim c \
+            --define:appVersion:"{buildVersion}" \
+            --define:appDate:"{gorge "date"}" \
+            --define:debug:true \
+            --define:configPath:/data \
+            --define:logDirPath:/data/logs \
+            --define:ssl \
+            --debugger:native \
+            --debuginfo:on \
+            --opt:none \
+            --excessiveStackTrace:off \
+            --out:app \
+            src/procwatch
+       """

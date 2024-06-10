@@ -18,5 +18,6 @@ nimblecache/
 htmldocs/
 *_[0-9][0-9]*.nims
 # Binaries and Temp Files
-/procwatch
+/procwatch*
+/procwatch_debug*
 procwatch.json

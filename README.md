@@ -46,6 +46,8 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Rocket.Chat support.~~
 * ~~Add Usage Documentation.~~
 * ~~Add Gotify support.~~
+* ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
+* ~~Port to Nim 2.0.4.~~
 * Add NodeBB support.
 * Add Discourse support.
 * Add automatically generated messages containing useful information about the finished process.
