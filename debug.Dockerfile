@@ -1,7 +1,7 @@
 FROM akito13/nim:alpine AS build
 
 ARG nimble_task_build=docker_build_debug
-ARG app_version=0.2.0
+ARG app_version=0.3.0
 
 WORKDIR /app
 

@@ -132,7 +132,7 @@ proc setProkInfo(fresh: bool #[Set to `true` when running this proc for the firs
     let pathPid = constructPathPid()
     prok.running = pathPid.dirExists
     if not prok.running and not fresh: prok.finish = now(); return
-    if not isInputValid(): raise ProcessNotFoundError.newException("Command could not be detected, because neither a process name nor a process PID was provided.")
+    if not isInputValid(): raise ProcessNotFoundError.newException("Command could not be detected, because neither a process name nor a process PID was provided or matched. Please, make sure, you provide a valid PID or process name of a program, that is running right now.")
     if prok.pathCmd == "": prok.pathCmd = readPathCmd(prok.pid)
     if prok.running and prok.start == getDefaultTime(): prok.start = readProcCreationTime(prok.pid)
   except ProcessNotFoundError:

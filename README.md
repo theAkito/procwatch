@@ -24,8 +24,21 @@ apt install -y libdbus-1-dev libssl-dev
 ```
 
 ### Docker
+When using Docker, only providing a PID works.
+Providing a process name does not work, as the app inside the container has no access to the host system, besides the mounted volumes.
+
 ```bash
-docker run --rm --user "$(id -u):$(id -g)" --volume "/proc:/data/proc" --volume "./procwatch/config:/data/config" -it akito13/procwatch 1234 # Replace `1234` with the PID you are watching.
+declare -r name=procwatch
+mkdir -p "${name}/config"
+cd "${name}"
+docker run \
+    --rm \
+    --name "${name}" \
+    --user "$(id -u):$(id -g)" \
+    --volume "/proc:/data/proc"\
+    --volume "./${name}/config:/data/config" \
+    -it "akito13/${name}"
+  1234 # Replace `1234` with the PID you are watching.
 ```
 
 For usage information, check out the [Usage Guide](https://github.com/theAkito/procwatch/wiki/Usage-Guide).
