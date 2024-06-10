@@ -48,6 +48,8 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Gotify support.~~
 * ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
 * ~~Port to Nim 2.0.4.~~
+* Add possibility to test connection to confirm cerdentials match.
+* Add support for TLS connection without StartTLS.
 * Add NodeBB support.
 * Add Discourse support.
 * Add automatically generated messages containing useful information about the finished process.
