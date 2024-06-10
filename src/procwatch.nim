@@ -46,7 +46,7 @@ let
   )
 
 var
-  configPath: string
+  configPath: string = meta.configPath
   pidsRunning: seq[int] = @[]
   pidsFoundByName: seq[int] = @[]
   proksFoundByName: seq[Proc] = @[]
@@ -167,12 +167,12 @@ proc areProksRunningsLive(): bool =
   pidsFoundByName.anyIt(pidsRunning.contains(it))
 
 proc run() =
+  #[ Manifest command line options. ]#
+  setOpts()
   #[ Initialise configuration file. ]#
   if not initConf(configPath): raise OSError.newException("Config file could neither be found nor generated!")
   #[ Discover running processes by PID in /proc. ]#
   pidsRunning = readRunningPids()
-  #[ Manifest command line options. ]#
-  setOpts()
   #[ Gather data regarding selected process. ]#
   try:
     setProkInfo(true)
