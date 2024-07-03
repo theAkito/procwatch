@@ -66,6 +66,8 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Gotify support.~~
 * ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
 * ~~Port to Nim 2.0.4.~~
+* Report how long the app waited for the process(es) to finish.
+* Notify, when watcher itself crashed, before target program concluded.
 * Add possibility to test connection to confirm cerdentials match.
 * Add support for TLS connection without StartTLS.
 * Add NodeBB support.
@@ -74,7 +76,7 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * Reach Stability.
 
 ## License
-Copyright © 2022  Akito <the@akito.ooo>
+Copyright © 2022-2024 Akito <the@akito.ooo>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
