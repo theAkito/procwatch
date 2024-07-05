@@ -7,6 +7,9 @@
 
 import
   ../meta,
+  ../model/[
+    context
+  ],
   json,
   options,
   strutils,
@@ -22,7 +25,7 @@ from tables import `[]`
 type
   RocketChatDefect * = object of Defect
 
-  RocketChatContext * = ref object
+  RocketChatContext * = ref object of Context
     url      * : string
     token    * : string
     userID   * : string

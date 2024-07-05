@@ -1,5 +1,8 @@
 import
   ../meta,
+  ../model/[
+    context
+  ],
   std/[
     json,
     with,
@@ -11,7 +14,7 @@ import
   ]
 
 type
-  MailContext * = ref object
+  MailContext * = ref object of Context
     nameSender            *: string
     username              *: string
     password              *: string

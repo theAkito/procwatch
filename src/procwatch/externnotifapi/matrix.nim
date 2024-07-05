@@ -3,6 +3,9 @@
 
 import
   ../meta,
+  ../model/[
+    context
+  ],
   json,
   strutils,
   sequtils,
@@ -17,7 +20,7 @@ from tables import `[]`
 type
   MatrixDefect * = object of Defect
 
-  MatrixContext * = ref object
+  MatrixContext * = ref object of Context
     url      * : string
     username * : string
     password * : string

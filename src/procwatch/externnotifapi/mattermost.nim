@@ -2,6 +2,9 @@
 
 import
   ../meta,
+  ../model/[
+    context
+  ],
   json,
   strutils,
   apiutils,
@@ -12,7 +15,7 @@ import
 type
   MattermostDefect = object of Defect
 
-  MattermostContext* = ref object
+  MattermostContext* = ref object of Context
     url          * : string      # Example: http://localhost:8065/api/v4
     loginID      * : string      # Only necessary, if using a temporary session token, instead of a voluntarily permanent Bearer token.
     password     * : string      # Only necessary, if using a temporary session token, instead of a voluntarily permanent Bearer token.

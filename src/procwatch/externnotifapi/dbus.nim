@@ -1,11 +1,14 @@
 import
   ../meta,
+  ../model/[
+    context
+  ],
   json,
   logging,
   notification
 
 type
-  DBusContext * = ref object
+  DBusContext * = ref object of Context
     nameApp               *: string
     summary               *: string
     message               *: string

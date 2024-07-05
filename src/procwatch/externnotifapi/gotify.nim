@@ -2,6 +2,9 @@
 
 import
   ../meta,
+  ../model/[
+    context
+  ],
   json,
   options,
   strutils,
@@ -15,7 +18,7 @@ import
 type
   GotifyDefect * = object of Defect
 
-  GotifyContext * = ref object
+  GotifyContext * = ref object of Context
     url      * : string
     token    * : string # appToken
     title    * : string
