@@ -1,6 +1,7 @@
 import
   meta,
   configurator,
+  contextor,
   externnotifapi/[
     mail,
     dbus,
@@ -22,12 +23,12 @@ let
 proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
-proc notifyViaMail() = config.mail.sendMail()
-proc notifyViaDbus() = config.dbus.broadcastDbus()
-proc notifyViaMattermost() = discard config.mattermost.postMattermost()
-proc notifyViaMatrix() = discard config.matrix.postMatrix()
-proc notifyViaRocketChat() = discard config.rocketchat.postRocketChat()
-proc notifyViaGotify() = discard config.gotify.postGotify()
+proc notifyViaMail() = config.mail.applyCtx.sendMail()
+proc notifyViaDbus() = config.dbus.applyCtx.broadcastDbus()
+proc notifyViaMattermost(): bool {.discardable.} = config.mattermost.applyCtx.postMattermost()
+proc notifyViaMatrix(): bool {.discardable.} = config.matrix.applyCtx.postMatrix()
+proc notifyViaRocketChat(): bool {.discardable.} = config.rocketchat.applyCtx.postRocketChat()
+proc notifyViaGotify(): bool {.discardable.} = config.gotify.applyCtx.postGotify()
 
 template notify(enabled: bool, doNotify: proc, nameService: string): untyped =
   if enabled:
