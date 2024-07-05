@@ -4,7 +4,9 @@ import
   base64,
   os,
   logging,
-  strutils
+  strutils,
+  options
+
 from externnotifapi/mail import MailContext
 from externnotifapi/dbus import DBusContext
 from externnotifapi/mattermost import MattermostContext
@@ -12,8 +14,12 @@ from externnotifapi/matrix import MatrixContext
 from externnotifapi/rocketchat import RocketChatContext
 from externnotifapi/gotify import GotifyContext
 
+export options
+
 type
-  MasterConfig = object
+  MasterContext* = object
+    message                   *: string
+  MasterConfig* = object
     version                   *: string
     intervalPoll              *: int
     useMail                   *: bool
@@ -24,6 +30,7 @@ type
     useGotify                 *: bool
     useRevoltChat             *: bool
     useMumble                 *: bool
+    master                    *: Option[MasterContext]
     mail                      *: MailContext
     dbus                      *: DBusContext
     mattermost                *: MattermostContext
@@ -37,6 +44,9 @@ let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "configurator" & logMsgSuffix)
 
 var
+  masterContext = MasterContext(
+    message: defaultMsg
+  )
   mailContext = MailContext(
     message: defaultMsg,
     portOutgoing: 587
@@ -67,9 +77,11 @@ var
     message: "Watched process finished executing.",
     extras: jNodeEmpty
   )
+var
   config* = MasterConfig(
     version: appVersion,
     intervalPoll: 5_000,
+    master: masterContext.some,
     mail: mailContext,
     dbus: dbusContext,
     mattermost: mattermostContext,
@@ -83,6 +95,9 @@ func pretty(node: JsonNode): string = node.pretty(configIndentation)
 
 func genPathFull(path, name: string): string =
   if path != "": path.normalizePathEnd() & '/' & name else: name
+
+template getContextMaster*(config: MasterConfig = config): MasterContext =
+  config.master.get
 
 proc getConfig*(): MasterConfig = config
 
