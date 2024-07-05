@@ -107,6 +107,23 @@ proc readProcCreationTime(pid: int): DateTime =
   try: constructPathPid(pid).open(fmRead).getFileInfo().creationTime.toTimestamp().toDateTime()
   except: getDefaultTime()
 
+proc getDurationText(duration: Duration): string =
+  let
+    inHours = duration.inHours
+    inMinutes = duration.inMinutes
+    inSeconds = duration.inSeconds
+    txtTimePassed = "Time passed until process(es) finished: "
+    txtH = "h "
+    txtM = "m "
+    charS = 's'
+  if inHours <= 0:
+    if inMinutes > 0:
+      txtTimePassed & $inMinutes & txtM & $(inSeconds mod 60) & charS
+    else:
+      txtTimePassed & $inSeconds & charS
+  else:
+    txtTimePassed & $inHours & txtH & $(inMinutes mod 60) & txtM & $(inSeconds mod 60) & charS
+
 proc getProkInfos(pids: seq[int]): seq[Proc] =
   for pid in pids:
     let
@@ -187,12 +204,20 @@ proc run() =
   elif not isProkRunning():
     logger.log(lvlError, "Process with pid $# and name $# is not running!" % [$prok.pid, prok.name])
     quit(3)
+  #[ Record time at which process watching started. ]#
+  let timeStart = now()
   if proksFoundByNameAreAvailable:
     #[ Multiple processes are being watched by name. ]#
     waitForProksMulti()
   else:
     #[ A single process is being watched by PID. ]#
     waitForProkSingle()
+  #[ Record duration of how long process watching took. ]#
+  let durationText = getDurationText(now() - timeStart)
+  #[ Log duration of how long process watching took. ]#
+  logger.log lvlNotice, durationText
+  #[ Append time passed text to message body. ]#
+  config.getContextMaster.message = durationText
   #[ Watching ended, which means the processes finished executing. Time to notify the configured targets. ]#
   notify()
 

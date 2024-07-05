@@ -11,6 +11,7 @@ const
   configPath        * {.strdefine.}  = ""
   configIndentation * {.intdefine.}  = 2
   dirProc           * {.strdefine.}  = "/proc"
+  lineEnd           *                = "\p"
   nameMail          *                = "E-Mail"
   nameDbus          *                = "Desktop"
   nameMattermost    *                = "Mattermost"

@@ -54,7 +54,7 @@ Runs on Linux, what else?
 * Get process watching done. Do not overload with unnecessary features.
 
 ## Project Status
-Alpha. Unstable API. Model for config JSON will change a lot.
+Late Alpha. Unstable API. Model for config JSON will change a lot.
 
 ## TODO
 * ~~Add Configuration File.~~
@@ -66,7 +66,7 @@ Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Add Gotify support.~~
 * ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
 * ~~Port to Nim 2.0.4.~~
-* Report how long the app waited for the process(es) to finish.
+* ~~Report how long the app waited for the process(es) to finish.~~
 * Notify, when watcher itself crashed, before target program concluded.
 * Add possibility to test connection to confirm cerdentials match.
 * Add support for TLS connection without StartTLS.
