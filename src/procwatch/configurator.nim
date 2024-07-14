@@ -13,12 +13,13 @@ from externnotifapi/mattermost import MattermostContext
 from externnotifapi/matrix import MatrixContext
 from externnotifapi/rocketchat import RocketChatContext
 from externnotifapi/gotify import GotifyContext
+from model/context import ContextMessage, ContextMessageAddMode
 
 export options
 
 type
   MasterContext* = object
-    message                   *: string
+    messages                  *: seq[ContextMessage]
   MasterConfig* = object
     version                   *: string
     intervalPoll              *: int
@@ -45,7 +46,7 @@ let
 
 var
   masterContext = MasterContext(
-    message: defaultMsg
+    messages: @[]
   )
   mailContext = MailContext(
     message: defaultMsg,
@@ -99,6 +100,18 @@ func genPathFull(path, name: string): string =
 template getContextMaster*(config: MasterConfig = config): MasterContext =
   config.master.get
 
+proc configMessagePrepend*(message: string) =
+  config.getContextMaster.messages &= ContextMessage(
+    mode: PREPEND,
+    text: message
+  )
+
+proc configMessageAppend*(message: string) =
+  config.getContextMaster.messages &= ContextMessage(
+    mode: APPEND,
+    text: message
+  )
+
 proc getConfig*(): MasterConfig = config
 
 proc genDefaultConfig(path = configPath, name = configName): JsonNode =
@@ -118,6 +131,7 @@ proc initConf*(path = configPath, name = configName): bool =
     config.mail.password = config.mail.password.decode()
     config.mattermost.password = config.mattermost.password.decode()
     config.matrix.password = config.matrix.password.decode()
+    if config.master.isNone: config.master = masterContext.some
     return true
   try:
     genDefaultConfig(path, name)
