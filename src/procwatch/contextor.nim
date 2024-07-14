@@ -28,10 +28,11 @@ proc applyContext*(ctx:
   MatrixContext or
   RocketChatContext or
   GotifyContext =
-  ctx.ctxMessage = ContextMessage(
-    mode: APPEND,
-    text: config.getContextMaster.message
-  ).some
+  for msg in config.getContextMaster.messages:
+    if ctx.ctxMessage.isNone:
+      ctx.ctxMessage = some @[ContextMessage()]
+      ctx.ctxMessage.get.del(0)
+    ctx.ctxMessage.get &= msg
   ctx
 
 proc applyContextMessage*(ctx:
@@ -47,11 +48,12 @@ proc applyContextMessage*(ctx:
   MatrixContext or
   RocketChatContext or
   GotifyContext =
-  ctx.message = case ctx.ctxMessage.get.mode
-    of APPEND:
-      ctx.message & lineEnd.repeat(2) & ctx.ctxMessage.get.text
-    of PREPEND:
-      ctx.ctxMessage.get.text & lineEnd.repeat(2) & ctx.message
+  for msg in config.getContextMaster.messages:
+    ctx.message = case msg.mode
+      of APPEND:
+        ctx.message & lineEnd.repeat(2) & msg.text
+      of PREPEND:
+        msg.text & lineEnd.repeat(2) & ctx.message
   result = ctx
 
 proc applyCtx*(ctx:

@@ -7,4 +7,4 @@ type
     mode*: ContextMessageAddMode
     text*: string
   Context* = ref object of RootObj
-    ctxMessage*: Option[ContextMessage]
+    ctxMessage*: Option[seq[ContextMessage]]
