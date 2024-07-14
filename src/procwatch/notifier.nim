@@ -20,7 +20,7 @@ let
   logger = newConsoleLogger(defineLogLevel(), logMsgPrefix & logMsgInter & "notifier" & logMsgSuffix)
   intervalPoll = config.intervalPoll
 
-proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}:" & exceptMsg)
+proc logApiError(service, exceptMsg: string) = logger.log(lvlError, &"Connection error occurred when trying to notify via {service}: " & exceptMsg)
 proc waitPoll*() = sleep intervalPoll
 
 proc notifyViaMail() = config.mail.applyCtx.sendMail()
@@ -32,7 +32,9 @@ proc notifyViaGotify(): bool {.discardable.} = config.gotify.applyCtx.postGotify
 
 template notify(enabled: bool, doNotify: proc, nameService: string): untyped =
   if enabled:
-    try: doNotify() except: logApiError(nameService, getCurrentExceptionMsg())
+    try: doNotify() except:
+      logApiError(nameService, getCurrentExceptionMsg())
+      when meta.debug: echo getCurrentException().getStackTrace
 
 proc notify*() =
   notify(config.useMail      , notifyViaMail      , nameMail)
