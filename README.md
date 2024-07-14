@@ -67,8 +67,10 @@ Late Alpha. Unstable API. Model for config JSON will change a lot.
 * ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
 * ~~Port to Nim 2.0.4.~~
 * ~~Report how long the app waited for the process(es) to finish.~~
+* ~~Add name of finished process to notification content.~~
 * Notify, when watcher itself crashed, before target program concluded.
-* Add possibility to test connection to confirm cerdentials match.
+* Allow to notify on each process, when multiple processes are watched.
+* Add possibility to test connection to confirm credentials match.
 * Add support for TLS connection without StartTLS.
 * Add NodeBB support.
 * Add Discourse support.

@@ -12,6 +12,8 @@ import
     configurator
   ]
 
+from strformat import `&`
+
 proc getDefaultTime(): DateTime
 proc isProkRunningLive(): bool
 proc areProksRunningsLive(): bool
@@ -107,7 +109,7 @@ proc readProcCreationTime(pid: int): DateTime =
   try: constructPathPid(pid).open(fmRead).getFileInfo().creationTime.toTimestamp().toDateTime()
   except: getDefaultTime()
 
-proc getDurationText(duration: Duration): string =
+proc getTextDuration(duration: Duration): string =
   let
     inHours = duration.inHours
     inMinutes = duration.inMinutes
@@ -145,7 +147,7 @@ proc setProkInfo(fresh: bool #[Set to `true` when running this proc for the firs
     if pidsFoundByName.len != 0:
       proksFoundByName = getProkInfos(pidsFoundByName)
       return
-    if prok.name == "" and prok.pid != pidUnassigned: prok.name = readCmdName(prok.pid)
+    if prok.name == "" and prok.pid != pidUnassigned: prok.name = readCmdName(prok.pid).strip
     let pathPid = constructPathPid()
     prok.running = pathPid.dirExists
     if not prok.running and not fresh: prok.finish = now(); return
@@ -212,12 +214,15 @@ proc run() =
   else:
     #[ A single process is being watched by PID. ]#
     waitForProkSingle()
-  #[ Record duration of how long process watching took. ]#
-  let durationText = getDurationText(now() - timeStart)
-  #[ Log duration of how long process watching took. ]#
-  logger.log lvlNotice, durationText
+  let textProkName = &"""Process "{prok.name}" finished."""
   #[ Append time passed text to message body. ]#
-  config.getContextMaster.message = durationText
+  textProkName.configMessagePrepend
+  #[ Record duration of how long process watching took. ]#
+  let textDuration = getTextDuration(now() - timeStart)
+  #[ Log duration of how long process watching took. ]#
+  logger.log lvlNotice, textDuration
+  #[ Append time passed text to message body. ]#
+  textDuration.configMessageAppend
   #[ Watching ended, which means the processes finished executing. Time to notify the configured targets. ]#
   notify()
 
