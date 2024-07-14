@@ -54,7 +54,7 @@ Runs on Linux, what else?
 * Get process watching done. Do not overload with unnecessary features.
 
 ## Project Status
-Late Alpha. Unstable API. Model for config JSON will change a lot.
+Beta. Unstable API. Model for config JSON will change a lot.
 
 ## TODO
 * ~~Add Configuration File.~~
@@ -76,6 +76,7 @@ Late Alpha. Unstable API. Model for config JSON will change a lot.
 * Add Discourse support.
 * Add automatically generated messages containing useful information about the finished process.
 * Reach Stability.
+* Add GPG encryption to applicable notification types, like for example E-Mail.
 
 ## License
 Copyright © 2022-2024 Akito <the@akito.ooo>
