@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.5.1"
+version       = "0.5.2"
 author        = "Akito <the@akito.ooo>"
 description   = "Get notified by e-mail or notification, once a Linux process finishes."
 license       = "GPL-3.0-or-later"

@@ -66,7 +66,7 @@ Beta. Unstable API. Model for config JSON will change a lot.
 * ~~Add Gotify support.~~
 * ~~Migrate to [pkg/smtp](https://github.com/nim-lang/smtp).~~
 * ~~Port to Nim 2.0.4.~~
-* ~~Report how long the app waited for the process(es) to finish.~~
+* ~~Report how long the app waited for the process to finish.~~
 * ~~Add name of finished process to notification content.~~
 * Notify, when watcher itself crashed, before target program concluded.
 * Allow to notify on each process, when multiple processes are watched.

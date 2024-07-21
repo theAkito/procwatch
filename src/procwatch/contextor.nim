@@ -30,8 +30,7 @@ proc applyContext*(ctx:
   GotifyContext =
   for msg in config.getContextMaster.messages:
     if ctx.ctxMessage.isNone:
-      ctx.ctxMessage = some @[ContextMessage()]
-      ctx.ctxMessage.get.del(0)
+      ctx.ctxMessage = some[seq[ContextMessage]] @[]
     ctx.ctxMessage.get &= msg
   ctx
 
