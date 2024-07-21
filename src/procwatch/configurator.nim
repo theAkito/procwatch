@@ -132,6 +132,7 @@ proc initConf*(path = configPath, name = configName): bool =
     config.mattermost.password = config.mattermost.password.decode()
     config.matrix.password = config.matrix.password.decode()
     if config.master.isNone: config.master = masterContext.some
+    when meta.debug: logger.log lvlDebug, "Configuration initiated:" & lineEnd & pretty %config
     return true
   try:
     genDefaultConfig(path, name)
