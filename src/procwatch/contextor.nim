@@ -15,6 +15,9 @@ from externnotifapi/gotify import GotifyContext
 
 from options import some
 
+when meta.debug:
+  import json
+
 proc applyContext*(ctx:
   MailContext or
   DBusContext or
@@ -31,7 +34,15 @@ proc applyContext*(ctx:
   for msg in config.getContextMaster.messages:
     if ctx.ctxMessage.isNone:
       ctx.ctxMessage = some[seq[ContextMessage]] @[]
-    ctx.ctxMessage.get &= msg
+    when meta.debug:
+      try:
+        ctx.ctxMessage.get &= msg
+      except UnpackDefect:
+        echo "[contextor.applyContext] Failed to unpack optional value of `ctx.ctxMessage`!"
+        echo "Configuration:" & lineEnd & pretty %config
+        echo "Context:" & lineEnd & pretty %ctx
+    else:
+      ctx.ctxMessage.get &= msg
   ctx
 
 proc applyContextMessage*(ctx:
