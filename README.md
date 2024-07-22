@@ -68,6 +68,7 @@ Beta. Unstable API. Model for config JSON will change a lot.
 * ~~Port to Nim 2.0.4.~~
 * ~~Report how long the app waited for the process to finish.~~
 * ~~Add name of finished process to notification content.~~
+* Add ability to provide multiple contexts of same type.
 * Notify, when watcher itself crashed, before target program concluded.
 * Allow to notify on each process, when multiple processes are watched.
 * Add possibility to test connection to confirm credentials match.

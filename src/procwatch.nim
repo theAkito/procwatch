@@ -106,8 +106,13 @@ proc findPidsByName(name: string): seq[int] =
     if cmd == name: result.add pid
 
 proc readProcCreationTime(pid: int): DateTime = 
-  try: constructPathPid(pid).open(fmRead).getFileInfo().creationTime.toTimestamp().toDateTime()
-  except: getDefaultTime()
+  let file = constructPathPid(pid).open(fmRead)
+  try:
+    file.getFileInfo().creationTime.toTimestamp().toDateTime()
+  except:
+    getDefaultTime()
+  finally:
+    file.close
 
 proc getTextDuration(duration: Duration): string =
   let
